@@ -13,13 +13,20 @@
 ## 29/04/2021 - Docker never deletes / overwrites an updated/latest image. Added image purging.
 ## Added error checking function for container stop and removal
 
+## If any paremeter is sent with script then all error checking is ignored.
+if [ $# -eq 0 ]; then DOERRCHK=1; else DOERRCHK=0; fi
+
 ## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
 function error_check()
 {
-if [ $? -ne 0 ]
+ECODE=$?
+if [ $DOERRCHK -eq 1 ]
 then
-    printf "\n\nERROR - $1 - Exiting script.\n\n"
-    exit 1
+    if [ $ECODE -ne 0 ]
+    then
+        printf "\n\nERROR - $1 - Exiting script.\n\n"
+        exit 1
+    fi
 fi
 }
 
