@@ -18,7 +18,7 @@ function error_check()
 {
 if [ $? -ne 0 ]
 then
-    printf "\n\nERROR - $1 - \nExiting script.\n\n"
+    printf "\n\nERROR - $1 - Exiting script.\n\n"
     exit 1
 fi
 }
@@ -40,12 +40,11 @@ error_check "Problem encountered creating storage presistent volume"
 
 CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
 
-printf "\n Copying .vncpass_clear to persistent config volume..\n\n"
+printf "\n Create .vncpass_clear in root of persistent config volume directory..\n\n"
 if [ -n "$CPCFGVOL" ]
 then
     printf "\nVolume path for config = $CPCFGVOL\n\n"
-    cp --no-preserve=all .vncpass_clear $CPCFGVOL
-    #######  CODE CHANE TO GO HERE ####################################
+    echo "Ymt1cFFuNHAK" | base64 -id > $CPCFGVOL\.vncpass_clear
 else
     printf "\nERROR - Path to persistent volume not found. Exiting script.\n\n"
     exit 1
