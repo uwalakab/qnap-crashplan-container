@@ -4,20 +4,38 @@
 ## VOLUMES ARE ALREADY EXISITING / CREATED FOR PERSISTENT DATA (i.e. machine config)
 ## B. Uwalaka - 19/04/2021
 
-## NOTES:
+## UPDATE NOTES:
 ## 19/04/2021 - VNC_PASSWORD env variable no longer used.
 ## The .vncpass_clear file has the clear text password for VNC and is copied to the root of the config volume.
 ## During the container startup, content of the file is obfuscated and moved to .vncpass
 
+## 29/04/2021 - Docker never deletes / overwrites an updated/latest image.
+## Added error checking function for container stop and removal
+
+## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
+function error_check()
+{
+if [ $? -ne 0 ]
+then
+    printf "\n\nERROR - $1 - \nExiting script.\n\n"
+    exit 1
+fi
+}
+
 printf "\n\n Stop the container....\n\n"
 docker stop crashplan-pro-1
+error_check "Problem encountered stopping the container"
 
 printf "\n Delete the container....\n\n"
 docker rm crashplan-pro-1
+error_check "Problem encountered deleting the container"
 
 printf "\n Create the volumes for persistent data (if already existing no changes are made)\n\n"
 docker volume create crashplan-config
+error_check "Problem encountered creating config persisent volume"
+
 docker volume create crashplan-storage
+error_check "Problem encountered creating storage presistent volume"
 
 CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
 
@@ -44,9 +62,15 @@ docker create \
     --mount type=volume,source=crashplan-storage,target=/storage \
     jlesage/crashplan-pro:latest
 
-printf "\n Show current images and containers....\n\n"
+error_check "Problem encountered creating local image"
+
+printf "\n Pruning old images......\n\n"
+docker image prune -f
+error_check "Problem encountered pruning old images"
+
+printf "\n Show current images and containers....\n\nIMAGES\n"
 docker images
-printf "\n\n"
+printf "\n\nCONTAINERS\n"
 docker ps -a
 
 printf "\n\n#### Now launch Container Station, make your final settings\n\n  AUTO START ON, CPU LIMIT 80\n\n"
