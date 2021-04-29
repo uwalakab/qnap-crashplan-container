@@ -24,7 +24,7 @@ if [ $DOERRCHK -eq 1 ]
 then
     if [ $ECODE -ne 0 ]
     then
-        printf "\n\nERROR - $1 - Exiting script.\n\n"
+        printf "\n\n---- ERROR - $1 - Exiting script.\n\n"
         exit 1
     fi
 fi
@@ -47,13 +47,19 @@ error_check "Problem encountered creating storage presistent volume"
 
 CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
 
-printf "\n Create .vncpass_clear in root of persistent config volume directory..\n\n"
 if [ -n "$CPCFGVOL" ]
 then
     printf "\nVolume path for config = $CPCFGVOL\n\n"
-    echo "Ymt1cFFuNHAK" | base64 -id > $CPCFGVOL/.vncpass_clear
+    
+    if [ ! -f $CPCFGVOL/.vncpass ]
+    then
+        printf "\nSetting VNC password.\n\n"
+        echo "Ymt1cFFuNHAK" | base64 -id > $CPCFGVOL/.vncpass_clear
+    else
+        printf "\nVNC password already set.\n\n"
+    fi
 else
-    printf "\nERROR - Path to persistent volume not found. Exiting script.\n\n"
+    printf "\n---- ERROR - Path to persistent volume not found - Exiting script.\n\n"
     exit 1
 fi
 
