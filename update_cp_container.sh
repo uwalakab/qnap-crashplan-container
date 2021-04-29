@@ -10,7 +10,7 @@
 ## The .vncpass_clear file has the clear text password for VNC and is copied to the root of the config volume.
 ## During the container startup, content of the file is obfuscated and moved to .vncpass
 
-## 29/04/2021 - Docker never deletes / overwrites an updated/latest image.
+## 29/04/2021 - Docker never deletes / overwrites an updated/latest image. Added image purging.
 ## Added error checking function for container stop and removal
 
 ## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
