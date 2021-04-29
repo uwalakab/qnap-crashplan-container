@@ -45,6 +45,7 @@ if [ -n "$CPCFGVOL" ]
 then
     printf "\nVolume path for config = $CPCFGVOL\n\n"
     cp --no-preserve=all .vncpass_clear $CPCFGVOL
+    #######  CODE CHANE TO GO HERE ####################################
 else
     printf "\nERROR - Path to persistent volume not found. Exiting script.\n\n"
     exit 1
