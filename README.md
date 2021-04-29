@@ -1,4 +1,4 @@
-# qnap-crashplan-container-update
+# QNAP Crashplan container update script
 Script for updating Crashplan Pro container on the QNAP NAS
 Using the jlesage/crashplan-pro docker image on the QNAP NAS system running Container Station is a very effective (but un-supported) way of being able to backup data from shares on your NAS drive.
 
