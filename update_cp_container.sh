@@ -44,7 +44,7 @@ printf "\n Create .vncpass_clear in root of persistent config volume directory..
 if [ -n "$CPCFGVOL" ]
 then
     printf "\nVolume path for config = $CPCFGVOL\n\n"
-    echo "Ymt1cFFuNHAK" | base64 -id > $CPCFGVOL\.vncpass_clear
+    echo "Ymt1cFFuNHAK" | base64 -id > $CPCFGVOL/.vncpass_clear
 else
     printf "\nERROR - Path to persistent volume not found. Exiting script.\n\n"
     exit 1
