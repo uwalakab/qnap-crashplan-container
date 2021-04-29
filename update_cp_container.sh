@@ -49,7 +49,7 @@ else
     exit 1
 fi
 
-printf "\n Create new cotainer from latest image and mount persistent data volumes...\n\n"
+printf "\n Create new container from latest image and mount persistent data volumes...\n\n"
 docker create \
     --name crashplan-pro-1 \
     --hostname QNAPCPFSB \
