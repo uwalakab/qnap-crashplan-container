@@ -82,9 +82,9 @@ printf "\n Pruning old images......\n\n"
 docker image prune -f
 error_check "Problem encountered pruning old images"
 
-printf "\n Show current images and containers....\n\nIMAGES\n"
+printf "\n Show current images and containers....\n\nIMAGES\n------\n"
 docker images
-printf "\n\nCONTAINERS\n"
+printf "\n\nCONTAINERS\n----------\n"
 docker ps -a
 
 printf "\n\n#### Now launch Container Station, make your final settings\n\n  AUTO START ON, CPU LIMIT 80\n\n"
