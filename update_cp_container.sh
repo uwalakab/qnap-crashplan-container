@@ -54,6 +54,7 @@ then
     if [ ! -f $CPCFGVOL/.vncpass ]
     then
         printf "\nSetting VNC password.\n\n"
+        ### CHANGE THE FOLLOWING LINE WITH READ COMMAND -- read -p "Propmt: " -s PASSWORD
         echo "Ymt1cFFuNHAK" | base64 -id > $CPCFGVOL/.vncpass_clear
     else
         printf "\nVNC password already set.\n\n"
