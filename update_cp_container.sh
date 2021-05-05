@@ -8,7 +8,7 @@
 ## UPDATE NOTES:
 ## 19/04/2021 - VNC_PASSWORD env variable no longer used. It is now prompted for.
 ## The .vncpass_clear file has the clear text password for VNC and is copied to the root of the config volume.
-## During the container startup, content of the file is obfuscated and moved to .vncpass
+## During the container start-up, content of the file is obfuscated and moved to .vncpass
 
 ## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
 function error_check()
@@ -28,9 +28,11 @@ fi
 CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
 
 ## -- ADD SCRIPT TO BACKUP PERSISTENT VOLUME DATA HERE --
+## -- FIND OUT IF YOU ONLY NEED TO BACK UP SPECIFIC DIRECTORIES AS THERE MAY BE
+## -- A LOT OF CACHED DATA FOR VNC SCREEN REFRESHING etc. THIS IS NOT NEEDED
 
 
-## If any paremeter is sent with script then all error checking is ignored.
+## If any parameter is sent with script then all error checking is ignored.
 if [ $# -eq 0 ]; then DOERRCHK=1; else DOERRCHK=0; fi
 
 
@@ -44,10 +46,10 @@ error_check "deleting the container"
 
 printf "\n Create the volumes for persistent data (if already existing no changes are made)\n\n"
 docker volume create crashplan-config
-error_check "creating crashplan-config persisent volume"
+error_check "creating crashplan-config persistent volume"
 
 docker volume create crashplan-storage
-error_check "creating storage presistent volume"
+error_check "creating crashplan-storage persistent volume"
 
 if [ -n "$CPCFGVOL" ]
 then
