@@ -1,17 +1,17 @@
 #!/bin/sh
 ## https://github.com/uwalakab/qnap-crashplan-container-update
 
-## THIS SCRIPT CREATES A NEW CONTAINER FROM THE LATEST IMAGE FOR CRASHPLAN-PRO.
+## THIS SCRIPT CREATES A NEW CONTAINER FROM THE LATEST JLESAGE IMAGE FOR CRASHPLAN-PRO.
 ## VOLUMES ARE ALREADY EXISITING / CREATED FOR PERSISTENT DATA (i.e. machine config)
 ## B. Uwalaka - 19/04/2021
 
 ## UPDATE NOTES:
-## 19/04/2021 - VNC_PASSWORD env variable no longer used.
+## 19/04/2021 - VNC_PASSWORD env variable no longer used. It is now prompted for.
 ## The .vncpass_clear file has the clear text password for VNC and is copied to the root of the config volume.
 ## During the container startup, content of the file is obfuscated and moved to .vncpass
 
-## 29/04/2021 - Docker never deletes / overwrites an updated/latest image. Added image purging.
-## Added error checking function for container stop and removal
+## Get path for the crashplan-config persistent volume
+CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
 
 ## If any paremeter is sent with script then all error checking is ignored.
 if [ $# -eq 0 ]; then DOERRCHK=1; else DOERRCHK=0; fi
@@ -19,12 +19,12 @@ if [ $# -eq 0 ]; then DOERRCHK=1; else DOERRCHK=0; fi
 ## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
 function error_check()
 {
-ECODE=$?
+EXITCODE=$?
 if [ $DOERRCHK -eq 1 ]
 then
-    if [ $ECODE -ne 0 ]
+    if [ $EXITCODE -ne 0 ]
     then
-        printf "\n\n---- ERROR - $1 - Exiting script.\n\n"
+        printf "\n\n---- ERROR - Problem encountered $1 - Exiting script.\n\n"
         exit 1
     fi
 fi
@@ -32,20 +32,18 @@ fi
 
 printf "\n\n Stop the container....\n\n"
 docker stop crashplan-pro-1
-error_check "Problem encountered stopping the container"
+error_check "stopping the container"
 
 printf "\n Delete the container....\n\n"
 docker rm crashplan-pro-1
-error_check "Problem encountered deleting the container"
+error_check "deleting the container"
 
 printf "\n Create the volumes for persistent data (if already existing no changes are made)\n\n"
 docker volume create crashplan-config
-error_check "Problem encountered creating config persisent volume"
+error_check "creating crashplan-config persisent volume"
 
 docker volume create crashplan-storage
-error_check "Problem encountered creating storage presistent volume"
-
-CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
+error_check "creating storage presistent volume"
 
 if [ -n "$CPCFGVOL" ]
 then
@@ -53,9 +51,9 @@ then
     
     if [ ! -f $CPCFGVOL/.vncpass ]
     then
-        printf "\nSetting VNC password.\n\n"
-        ### CHANGE THE FOLLOWING LINE WITH READ COMMAND -- read -p "Propmt: " -s PASSWORD
-        echo "Ymt1cFFuNHAK" | base64 -id > $CPCFGVOL/.vncpass_clear
+        printf "\nVNC password needs to be set.\n\n"
+        read -p "Enter New Password (not hidden): " VNCPWD
+        echo $VNCPWD > $CPCFGVOL/.vncpass_clear
     else
         printf "\nVNC password already set.\n\n"
     fi
@@ -77,11 +75,11 @@ docker create \
     --mount type=volume,source=crashplan-storage,target=/storage \
     jlesage/crashplan-pro:latest
 
-error_check "Problem encountered creating local image"
+error_check "creating local image"
 
 printf "\n Pruning old images......\n\n"
 docker image prune -f
-error_check "Problem encountered pruning old images"
+error_check "pruning old images"
 
 printf "\n Show current images and containers....\n\nIMAGES\n------\n"
 docker images
