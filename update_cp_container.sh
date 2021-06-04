@@ -10,6 +10,13 @@
 ## The .vncpass_clear file has the clear text password for VNC and is copied to the root of the config volume.
 ## During the container start-up, content of the file is obfuscated and moved to .vncpass
 
+## 04/06/2021 - Change the name of container
+
+## Set the variables
+## Get path for the crashplan-config persistent volume
+CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
+CTNRNAME=cppro
+
 ## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
 function error_check()
 {
@@ -24,8 +31,6 @@ then
 fi
 }
 
-## Get path for the crashplan-config persistent volume
-CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
 
 ## -- ADD SCRIPT TO BACKUP PERSISTENT VOLUME DATA HERE --
 ## -- FIND OUT IF YOU ONLY NEED TO BACK UP SPECIFIC DIRECTORIES AS THERE MAY BE
@@ -37,11 +42,11 @@ if [ $# -eq 0 ]; then DOERRCHK=1; else DOERRCHK=0; fi
 
 
 printf "\n\n Stop the container....\n\n"
-docker stop crashplan-pro-1
+docker stop $CTNRNAME
 error_check "stopping the container"
 
 printf "\n Delete the container....\n\n"
-docker rm crashplan-pro-1
+docker rm $CTNRNAME
 error_check "deleting the container"
 
 printf "\n Create the volumes for persistent data (if already existing no changes are made)\n\n"
@@ -70,7 +75,7 @@ fi
 
 printf "\n Create new container from latest image and mount persistent data volumes...\n\n"
 docker create \
-    --name crashplan-pro-1 \
+    --name $CTNRNAME \
     --hostname QNAPCPFSB \
     -p 32768:5800 -p 32769:5900 \
     -e TZ=Europe/London -e KEEP_APP_RUNNING=1 \
