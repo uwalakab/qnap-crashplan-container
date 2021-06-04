@@ -10,7 +10,7 @@
 ## The .vncpass_clear file has the clear text password for VNC and is copied to the root of the config volume.
 ## During the container start-up, content of the file is obfuscated and moved to .vncpass
 
-## 04/06/2021 - Change the name of container
+## 04/06/2021 - Name of the container is set by variable in the script
 
 ## Set the variables
 ## Get path for the crashplan-config persistent volume
