@@ -10,12 +10,15 @@
 ## The .vncpass_clear file has the clear text password for VNC and is copied to the root of the config volume.
 ## During the container start-up, content of the file is obfuscated and moved to .vncpass
 
-## 04/06/2021 - Name of the container is set by variable in the script
+## 06/06/2021 - Name of the container and image is set by variables in the script
 
-## Set the variables
+## Set the variables for the script
 ## Get path for the crashplan-config persistent volume
 CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
+## Set container name
 CTNRNAME=cppro
+## Set container image
+CTNRIMAGE=jlesage/crashplan-pro:latest
 
 ## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
 function error_check()
@@ -84,7 +87,7 @@ docker create \
     -v /share/Public:/qnapnas/Public:rw \
     --mount type=volume,source=crashplan-config,target=/config \
     --mount type=volume,source=crashplan-storage,target=/storage \
-    jlesage/crashplan-pro:latest
+    $CTNRIMAGE
 
 error_check "creating local image"
 
@@ -94,7 +97,7 @@ error_check "pruning old images"
 
 printf "\n Show current images and containers....\n\nIMAGES\n------\n"
 docker images
-printf "\n\nCONTAINERS\n----------\n"
+printf "\nCONTAINERS\n----------\n"
 docker ps -a
 
 printf "\n\n#### Now launch Container Station, make your final settings\n\n  AUTO START ON, CPU LIMIT 80\n\n"
