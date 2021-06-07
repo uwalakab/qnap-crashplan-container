@@ -59,6 +59,7 @@ error_check "creating crashplan-config persistent volume"
 docker volume create crashplan-storage
 error_check "creating crashplan-storage persistent volume"
 
+## Check if the persistent volume exists
 if [ -n "$CPCFGVOL" ]
 then
     printf "\nVolume path for config = $CPCFGVOL\n\n"
