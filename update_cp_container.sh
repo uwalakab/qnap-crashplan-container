@@ -15,7 +15,7 @@
 ## 21/07/2021 - Added check to ensure QNAP "admin" is the user, backup of persistent data using rsync command and map the homes share from QNAP
 
 ## Check user is "admin" that is running this script
-if [ "$USER" != "admin" ]; then printf "\n---- ERROR - This script must be run as admin. Use sudo -i if you are in the administrators group.\n\n"; exit 1; fi
+if [ "$USER" != "admin" ]; then printf "\n---- ERROR - This script must be run as admin.\n\n---- Use sudo -i if you are in the administrators group.\n\n"; exit 1; fi
 
 ## Set the variables for the script
 ## Get path for the crashplan-config persistent volume
@@ -79,13 +79,14 @@ error_check "creating crashplan-storage persistent volume"
 ## We know persistent volume exists from check earlier in the code
 printf "\nVolume path for config = $CPCFGVOL\n\n"
 
-if [ ! -f $CPCFGVOL/.vncpass ]
+## Check there is a password already set for VNC
+if [ -f $CPCFGVOL/.vncpass ]
 then
+    printf "\nVNC password already set.\n\n"
+else
     printf "\nVNC password needs to be set.\n\n"
     read -p "Enter New Password (not hidden): " VNCPWD
     echo $VNCPWD > $CPCFGVOL/.vncpass_clear
-else
-    printf "\nVNC password already set.\n\n"
 fi
 
 printf "\n Create new container from latest image and mount persistent data volumes...\n\n"
