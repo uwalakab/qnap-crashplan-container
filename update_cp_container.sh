@@ -12,9 +12,15 @@
 
 ## 06/06/2021 - Name of the container and image is set by variables in the script
 
+## 21/07/2021 - Added check to ensure QNAP "admin" is the user, backup of persistent data using rsync command and map the homes share from QNAP
+
+## Check user is "admin" that is running this script
+if [ "$USER" != "admin" ]; then printf "\n---- ERROR - This script must be run as admin. Use sudo -i if you are in the administrators group.\n\n"; exit 1; fi
+
 ## Set the variables for the script
 ## Get path for the crashplan-config persistent volume
 CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
+BACKUPDIR="$PWD/backup-of-config-volume"
 ## Set container name
 CTNRNAME=cppro
 ## Set container image
@@ -35,9 +41,16 @@ fi
 }
 
 
-## -- ADD SCRIPT TO BACKUP PERSISTENT VOLUME DATA HERE --
-## -- FIND OUT IF YOU ONLY NEED TO BACK UP SPECIFIC DIRECTORIES AS THERE MAY BE
-## -- A LOT OF CACHED DATA FOR VNC SCREEN REFRESHING etc. THIS IS NOT NEEDED
+## Check persistent volume and backup directories exist. If they do not then exit the script
+if [ ! -d "$CPCFGVOL" ]
+then
+    printf "\n---- ERROR - Path to persistent volume directory not found - Exiting script.\n\n"
+    exit 1
+elif [ ! -d "$BACKUPDIR" ]
+then
+    printf "\n---- ERROR - Path to backup directory not found - Exiting script.\n---- PATH should be $BACKUPDIR\n\n"
+    exit 1
+fi
 
 
 ## If any parameter is sent with script then all error checking is ignored.
@@ -47,6 +60,10 @@ if [ $# -eq 0 ]; then DOERRCHK=1; else DOERRCHK=0; fi
 printf "\n\n Stop the container....\n\n"
 docker stop $CTNRNAME
 error_check "stopping the container"
+
+printf "\n\n Backup persistent data....\n\n"
+rsync --delete-after -av "$CPCFGVOL/" "$BACKUPDIR/"
+error_check "backing up persistent data"
 
 printf "\n Delete the container....\n\n"
 docker rm $CTNRNAME
@@ -59,22 +76,16 @@ error_check "creating crashplan-config persistent volume"
 docker volume create crashplan-storage
 error_check "creating crashplan-storage persistent volume"
 
-## Check if the persistent volume exists
-if [ -n "$CPCFGVOL" ]
+## We know persistent volume exists from check earlier in the code
+printf "\nVolume path for config = $CPCFGVOL\n\n"
+
+if [ ! -f $CPCFGVOL/.vncpass ]
 then
-    printf "\nVolume path for config = $CPCFGVOL\n\n"
-    
-    if [ ! -f $CPCFGVOL/.vncpass ]
-    then
-        printf "\nVNC password needs to be set.\n\n"
-        read -p "Enter New Password (not hidden): " VNCPWD
-        echo $VNCPWD > $CPCFGVOL/.vncpass_clear
-    else
-        printf "\nVNC password already set.\n\n"
-    fi
+    printf "\nVNC password needs to be set.\n\n"
+    read -p "Enter New Password (not hidden): " VNCPWD
+    echo $VNCPWD > $CPCFGVOL/.vncpass_clear
 else
-    printf "\n---- ERROR - Path to persistent volume not found - Exiting script.\n\n"
-    exit 1
+    printf "\nVNC password already set.\n\n"
 fi
 
 printf "\n Create new container from latest image and mount persistent data volumes...\n\n"
@@ -83,9 +94,10 @@ docker create \
     --hostname QNAPCPFSB \
     -p 32768:5800 -p 32769:5900 \
     -e TZ=Europe/London -e KEEP_APP_RUNNING=1 -e USER_ID=0 -e GROUP_ID=0 \
-    -v /shareDownload:/qnapnas/Download:rw \
+    -v /share/Download:/qnapnas/Download:rw \
     -v /share/Multimedia:/qnapnas/Multimedia:rw \
     -v /share/Public:/qnapnas/Public:rw \
+    -v /share/homes:/qnapnas/homes:rw \
     --mount type=volume,source=crashplan-config,target=/config \
     --mount type=volume,source=crashplan-storage,target=/storage \
     $CTNRIMAGE
