@@ -89,8 +89,13 @@ else
     echo $VNCPWD > $CPCFGVOL/.vncpass_clear
 fi
 
+## printf "\n Removing the local image"
+## docker rmi $CTNRIMAGE
+## error_check "removing local image"
+
 printf "\n Create new container from latest image and mount persistent data volumes...\n\n"
 docker create \
+    --pull always \
     --name $CTNRNAME \
     --hostname QNAPCPFSB \
     -p 32768:5800 -p 32769:5900 \
