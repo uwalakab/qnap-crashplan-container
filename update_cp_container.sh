@@ -20,7 +20,7 @@ if [ "$USER" != "admin" ]; then printf "\n---- ERROR - This script must be run a
 ## Set the variables for the script
 ## Get path for the crashplan-config persistent volume
 CPCFGVOL=$(docker volume inspect crashplan-config -f {{.Mountpoint}})
-BACKUPDIR="$PWD/backup-of-config-volume"
+BACKUPDIR="$HOME/crashplan-stuff/backup-of-config-volume"
 ## Set container name
 CTNRNAME=cppro
 ## Set container image
