@@ -14,8 +14,8 @@
 
 ## 21/07/2021 - Added check to ensure QNAP "admin" is the user, backup of persistent data using rsync command and map the homes share from QNAP
 
-## Check user is "admin" that is running this script
-if [ "$USER" != "admin" ]; then printf "\n---- ERROR - This script must be run as admin.\n\n---- Use sudo -i if you are in the administrators group.\n\n"; exit 1; fi
+## Check user have "root" level access to run this script
+if [ $UID != 0 ]; then printf "\n---- ERROR - This script must be run as admin.\n\n---- Use sudo -i if you are in the administrators group.\n\n"; exit 1; fi
 
 ## Set the variables for the script
 ## Get path for the crashplan-config persistent volume
