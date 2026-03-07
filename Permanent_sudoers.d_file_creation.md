@@ -79,3 +79,5 @@ umount /tmp/config
 ```
 Finally exit your SSH session.  
 Whenever the QNAP NAS is rebooted your sudoer entry will always be created.
+<hr>
+Above based of reference: https://wiki.qnap.com/wiki/Running_Your_Own_Application_at_Startup
