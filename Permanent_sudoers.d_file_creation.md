@@ -8,7 +8,7 @@ In the QTS web interface, go to...
   
 `Control Panel > Hardware and tick "Run user defined processes during startup".`  
   
-<img src="Screenshot_Control_Panel_QNAP.jpg" alt="Alternate text" width="600">
+<img src="Images/Screenshot_Control_Panel_QNAP.jpg" alt="Alternate text" width="600">
   
 **Mount the Config Partition:**  
 SSH into your NAS as admin and mount the special configuration partition where `autorun.sh` resides.  
