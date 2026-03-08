@@ -55,7 +55,7 @@ chmod +x /tmp/config/autorun.sh
 ```
 
 **Check directory contents**  
-The `autorun.sh` file is now present and marked with an asterisk as shown in the following exampl.  
+The `autorun.sh` file is now present and marked with an asterisk as shown in the following example.  
 _(An asterisk indicates on QNAP that the file is executable.)_  
 
 ```
@@ -74,7 +74,6 @@ drwx------  2 admin administrators  12K 2010-01-11 05:41 lost+found/
 
 **Unmount the Config Partition.**  
 Use the following command.  
-
 ```
 umount /tmp/config
 ```
