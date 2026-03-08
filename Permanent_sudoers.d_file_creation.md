@@ -1,3 +1,4 @@
+# Make sudoers permanent on QNAP
 To make sudoers changes permanent on a QNAP TS-253, you must use a startup script because QTS recreates the `/usr/etc/sudoers.d` directory and the `/etc/sudoers` file from a RAM image during every boot. 
 
 ## Using `autorun.sh` (Recommended)
