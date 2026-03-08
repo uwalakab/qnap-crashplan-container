@@ -19,8 +19,8 @@ mount $(/sbin/hal_app --get_boot_pd port_id=0)6 /tmp/config
 ```
 _(Use code with caution.)_
 
-On successfully mounting the config partition you should see the following files in the directory.  
-In this example the `autorun.sh` file does not exist yet.  
+On successfully mounting the config partition the following example shows the files likely to be present in the directory.  
+In this example, the `autorun.sh` file does not exist yet.  
 
 ```
 ls -al /tmp/config
@@ -48,15 +48,15 @@ echo "YourUsername ALL=(ALL) ALL" > /usr/etc/sudoers.d/YourUsername
 _(Use code with caution.)_
 
 **Set Permissions on autorun.sh**  
-Make the script executable.  
+Make the script executable using the following command.  
 
 ```
 chmod +x /tmp/config/autorun.sh
 ```
 
 **Check directory contents**  
-The directory will also now have the `autorun.sh` file present, marked with the asterisk as follows.  
-The asterisk is an indicator on QNAP that the file is executable.  
+The `autorun.sh` file is now present and marked with an asterisk as shown in the following exampl.  
+_(An asterisk indicates on QNAP that the file is executable.)_  
 
 ```
 ls -al /tmp/config
@@ -73,6 +73,7 @@ drwx------  2 admin administrators  12K 2010-01-11 05:41 lost+found/
 ```
 
 **Unmount the Config Partition.**  
+Use the following command.  
 
 ```
 umount /tmp/config
@@ -80,4 +81,4 @@ umount /tmp/config
 Finally exit your SSH session.  
 Whenever the QNAP NAS is rebooted your sudoer entry will always be created.
 <hr>
-Above based of reference: https://wiki.qnap.com/wiki/Running_Your_Own_Application_at_Startup
+Reference: https://wiki.qnap.com/wiki/Running_Your_Own_Application_at_Startup
