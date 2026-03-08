@@ -36,8 +36,8 @@ drwx------  2 admin administrators  12K 2010-01-11 05:41 lost+found/
 ```
 **Create/Edit the autorun.sh Script:**  
 Create or edit the `/tmp/config/autorun.sh` file.  
-The script will create the `sudoers.d` directory and injects your user sudoer user into the file.  
-Replace `YourUsername` in the script with your actual or required user name.  
+The script will create the `sudoers.d` directory and injects your sudoer user into the file.  
+Replace `YourUsername` in the script and the filename with your actual user name.  
 
 ```
 #!/bin/sh
