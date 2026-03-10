@@ -74,7 +74,7 @@ drwx------  2 admin administrators  12K 2010-01-11 05:41 lost+found/
 ```
 
 **Unmount the Config Partition.**  
-Use the following command.  
+This final step is **important!** Use the following command to unmount the partition.  
 ```
 umount /tmp/config
 ```
