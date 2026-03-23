@@ -14,6 +14,8 @@
 
 ## 21/07/2021 - Added check to ensure QNAP "admin" is the user, backup of persistent data using rsync command and map the homes share from QNAP
 
+## 23/03/2026 - Added --restart always policy setting and command to start the container
+
 ## Check user have "root" level access to run this script
 if [ $UID != 0 ]; then printf "\n---- ERROR - This script must be run as admin.\n\n---- Use sudo -i if you are in the administrators group.\n\n"; exit 1; fi
 
@@ -106,6 +108,7 @@ docker create \
     -v /share/homes:/qnapnas/homes:rw \
     --mount type=volume,source=crashplan-config,target=/config \
     --mount type=volume,source=crashplan-storage,target=/storage \
+    --restart always \
     $CTNRIMAGE
 
 error_check "creating local image"
@@ -114,10 +117,13 @@ printf "\n Pruning old images......\n\n"
 docker image prune -f
 error_check "pruning old images"
 
+printf "\n\n#### Launch the container.......\n\n"
+docker start $CTNRNAME
+
 printf "\n Show current images and containers....\n\nIMAGES\n------\n"
 docker images
 printf "\nCONTAINERS\n----------\n"
 docker ps -a
 
-printf "\n\n#### Now launch Container Station, make your final settings\n\n  AUTO START ON, CPU LIMIT 80\n\n"
-printf " Uncheck the \"Please restart the container to apply these settings\" option, apply your changes and Start the container.\n\n"
+## printf "\n\n#### Now launch Container Station, make your final settings\n\n  AUTO START ON, CPU LIMIT 80\n\n"
+## printf " Uncheck the \"Please restart the container to apply these settings\" option, apply your changes and Start the container.\n\n"
