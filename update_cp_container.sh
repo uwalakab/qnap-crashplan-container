@@ -98,6 +98,7 @@ fi
 printf "\n Create new container from latest image and mount persistent data volumes...\n\n"
 docker create \
     --pull always \
+    --restart always \
     --name $CTNRNAME \
     --hostname QNAPCPFSB \
     -p 32768:5800 -p 32769:5900 \
@@ -108,7 +109,6 @@ docker create \
     -v /share/homes:/qnapnas/homes:rw \
     --mount type=volume,source=crashplan-config,target=/config \
     --mount type=volume,source=crashplan-storage,target=/storage \
-    --restart always \
     $CTNRIMAGE
 
 error_check "creating local image"
