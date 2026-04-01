@@ -27,6 +27,8 @@ BACKUPDIR="$HOME/crashplan-stuff/backup-of-config-volume"
 CTNRNAME=cppro
 ## Set container image
 CTNRIMAGE=jlesage/crashplan-pro:latest
+## Set container hostname
+CTNRHOSTNAME=QNAPCPFSB
 
 ## Function error_check will only pass out the message in $1 to console if the exit code is not ZERO
 function error_check()
@@ -100,7 +102,7 @@ docker create \
     --pull always \
     --restart always \
     --name $CTNRNAME \
-    --hostname QNAPCPFSB \
+    --hostname $CTNRHOSTNAME \
     -p 32768:5800 -p 32769:5900 \
     -e TZ=Europe/London -e KEEP_APP_RUNNING=1 -e USER_ID=0 -e GROUP_ID=0 \
     -v /share/Download:/qnapnas/Download:rw \
